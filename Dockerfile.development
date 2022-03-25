@@ -1,27 +1,9 @@
-FROM python:3.7.9-slim-buster
-ENV PYTHONUNBUFFERED 1
+FROM node:14.19.1-alpine
 
-RUN \
-  apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
-  build-essential \
-  git \
-  libyaml-dev \  
-  curl && \
-  pip install -U pip && pip install grow && \
-  rm -rf /var/lib/apt/lists/*
+# Install dependencies
+RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3 python3-dev py3-pip yaml-dev git
 
-RUN \
-  curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-  apt-get install -y nodejs && \
-  npm i -g npm && \
-  npm install -g gulp
+RUN pip3 install --global-option="--with-libyaml" --force pyyaml && \
+    pip3 install grow
 
-RUN mkdir /amp-dev
-COPY . /amp-dev/
-WORKDIR /amp-dev/
-
-RUN npm install
-
-EXPOSE 8080 8080
-WORKDIR /amp-dev/platform
-CMD ["gulp", "develop"]
+WORKDIR /usr/src/app

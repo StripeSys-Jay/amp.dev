@@ -1,0 +1,15 @@
+version: "3.7"
+services:
+  amp.dev:
+    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile.development
+    ports:
+      - "8080:8080"
+      - "8083:8083"
+    environment:
+      - AMP_DOC_TOKEN=<Update PAT Here>
+    volumes:
+      - ./:/usr/src/app
+

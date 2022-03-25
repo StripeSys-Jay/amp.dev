@@ -1,27 +1,26 @@
-FROM node:14-alpine
+FROM node:14.19.1-alpine
 
-# Create app directory
+ARG AMP_DOC_TOKEN
+# Install dependencies
+RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3 python3-dev py3-pip yaml-dev git
+
+RUN pip3 install --global-option="--with-libyaml" --force pyyaml && \
+    pip3 install grow
+
 WORKDIR /usr/src/app
 
-# Install dependencies
-RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3 tini
-RUN ln -s /usr/bin/python3 /usr/bin/python
-RUN npm install --quiet node-gyp -g
-# Add Tini
-ENTRYPOINT ["/sbin/tini", "--"]
-
-# Install app dependencies
-COPY package.json .
-COPY package-lock.json .
-RUN npm ci --only=production
-
-# Make sure to get latest
-ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
-
-# Bundle app source
 COPY . .
 
-EXPOSE 80 8080
-WORKDIR "platform"
-ENV NODE_ENV=production
-CMD ["node", "serve.js"]
+RUN npm install 
+
+RUN npm run bootstrap
+
+RUN \ 
+    mkdir -p dist/static/samples && \
+    mkdir -p dist/static/files && \
+    touch dist/static/samples/samples.json
+
+CMD npm run develop
+
+
+
