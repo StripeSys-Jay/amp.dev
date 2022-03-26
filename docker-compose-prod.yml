@@ -4,7 +4,7 @@ services:
     restart: always
     build: 
       context: .
-      dockerfile: Dockerfile.development
+      dockerfile: Dockerfile
       args:
        AMP_DOC_TOKEN: Update PAT Here
     ports:
