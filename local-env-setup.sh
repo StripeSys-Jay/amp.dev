@@ -82,6 +82,7 @@ case $INPUT in
         ;;
     *)
       echo "Sorry dev, I won't let you do that. See usage (--help)"
+        ;;
 esac
         
 
