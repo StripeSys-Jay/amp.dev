@@ -13,22 +13,8 @@ echo "
 }
 
 build () {
-    if [ ! -f .env ];then 
-    echo "INFO: .env not found, creating it in the current context." 
-    echo "Please enter the GitHub PAT."
-    read PAT
-    echo "AMP_DOC_TOKEN=$PAT" > .env
-    else
 
-    PAT=$(grep "AMP_DOC_TOKEN" .env | awk -F"=" '{print $2}')
-    if [[ ! -n $PAT ]];then
-    echo "INFO: .env exists, but PAT value missing. Please, enter the GitHub PAT."
-    read PAT
-    echo "AMP_DOC_TOKEN=$PAT" > .env
-    fi
-    fi 
-
-    echo "Check and create required files/dirs, if doesn't exists."
+    echo "PRE-BUILD SETUP: CHECK & CREATE DIRECTORY STRUCTURE"
     [ ! -d dist/static/samples ] && mkdir -p dist/static/samples
     [ ! -d dist/static/files ] && mkdir -p dist/static/files
     [ ! -f dist/static/samples/samples.json ] && touch dist/static/samples/samples.json 
