@@ -9,7 +9,7 @@ services:
       - "8080:8080"
       - "8083:8083"
     environment:
-      - AMP_DOC_TOKEN=<Update PAT here>
+      - AMP_DOC_TOKEN=${AMP_DOC_TOKEN}
     volumes:
       - ./:/usr/src/app
 

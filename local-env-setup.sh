@@ -14,10 +14,36 @@ echo "
 
 build () {
 
-    echo "PRE-BUILD SETUP: CHECK & CREATE DIRECTORY STRUCTURE"
+    echo "PRE-BUILD CHECKS & SETUP."
+    echo "1/2 - Run: Check PAT existence."
+    if [ ! -f .env ];then 
+    echo "INFO: .env not found, creating it in the current context." 
+    echo "Please enter the GitHub PAT."
+    read PAT
+    echo "AMP_DOC_TOKEN=$PAT" > .env
+    else
+
+    PAT=$(grep "AMP_DOC_TOKEN" .env | awk -F"=" '{print $2}')
+    if [[ ! -n $PAT ]];then
+    echo "INFO: .env exists, but PAT value missing. Please, enter the GitHub PAT."
+    read PAT
+    echo "AMP_DOC_TOKEN=$PAT" > .env
+    fi
+    fi 
+    echo "1/2 - Run: Check PAT existence...OK"
+
+    echo "2/2 - Run: Check Directory structure."
+
     [ ! -d dist/static/samples ] && mkdir -p dist/static/samples
     [ ! -d dist/static/files ] && mkdir -p dist/static/files
     [ ! -f dist/static/samples/samples.json ] && touch dist/static/samples/samples.json 
+    
+    echo "2/2 - Run: Check Directory structure...OK"
+
+    echo "Pre-Build Setup Completed."
+    echo
+    echo "BUILDING AMP.DEV"
+    echo
 
     echo "1/3 - Run: NPM INSTALL"
     docker-compose run amp.dev npm install || { echo "NPM INSTALL failed.";exit 1; }
