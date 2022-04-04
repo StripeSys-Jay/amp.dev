@@ -7,8 +7,11 @@ echo "
     --help | --usage: Prints the help message.
     --build: Set up and starts the local dev environment (npm install + npm run bootstrap).
     --reload: Reloads the app (npm run develop)
-    --clean: Stops and delete the local dev env; deletes docker
-             Images and containers.
+    --clean: Stops (if running) and removes all the amp.dev containers and networks.
+             Does not delete amp.dev image(s), volumes and source-code.
+    --clean-all: Stops and deletes the amp.dev containers, images and networks. 
+                 Does not delete amp.dev volumes and source-code.       
+             
       "
 }
 
@@ -58,7 +61,11 @@ reload () {
     docker-compose run -p 8080:8080 -p 8083:8083 amp.dev npm run develop || { echo "RELOAD CMD: NPM RUN DEVELOP failed.";exit 1; } 
 }
 clean () {
-    docker system prune 
+    docker-compose down 
+}
+
+clean-all (){
+    docker-compose down --rmi local 
 }
 
 TOTAL_ARGS=$#
@@ -79,6 +86,9 @@ case $INPUT in
         ;;
     --clean)
         clean
+        ;;
+    --clean-all)
+        clean-all
         ;;
     *)
       echo "Sorry dev, I won't let you do that. See usage (--help)"
