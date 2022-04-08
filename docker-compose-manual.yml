@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  amp.dev:
+    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile.development
+    ports:
+      - "8080:8080"
+      - "8083:8083"
+    environment:
+      - AMP_DOC_TOKEN=<update your PAT here>
+    volumes:
+      - ./:/usr/src/app
+    command: ["/bin/bash","-c","while true; do sleep 15; echo 'AMP.DEV Workspace Container is alive.'; done"]
+
