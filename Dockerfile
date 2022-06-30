@@ -10,15 +10,15 @@ RUN pip3 install --global-option="--with-libyaml" --force pyyaml && \
 WORKDIR /usr/src/app
 
 COPY . .
-
 RUN npm install 
 
-RUN npm run bootstrap
 
 RUN \ 
     mkdir -p dist/static/samples && \
     mkdir -p dist/static/files && \
-    touch dist/static/samples/samples.json
+    cp extras/samples.json dist/static/samples/samples.json
+
+RUN npm run bootstrap
 
 CMD npm run develop
 
