@@ -3,12 +3,6 @@ name: AMP.DEV DEV CI
 on:
   push:
     branches: [ ci-pipeline ]
-  pull_request_target:
-    types:
-      - closed
-    branches:    
-      - 'ci-pipeline'
-
 
 jobs:
 
@@ -17,19 +11,6 @@ jobs:
 
     steps:
       
-      - name: Extract branch name on Push Event
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "BUILD_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-        id: extract_branch
-
-      - name: Extract branch name on PR Merge Event
-        if: github.event_name == 'pull_request'
-        run: echo "BUILD_BRANCH=${GITHUB_HEAD_REF})"
-      
-      - name: Get branch name
-        run: echo "${{ env.BUILD_BRANCH }}"
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -43,7 +24,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          tags: div1114/amp-dev:${{ env.BUILD_BRANCH }}
+          tags: div1114/amp-dev:${GITHUB_REF#refs/heads/}-${GITHUB_SHA}
           build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
           push: true 
