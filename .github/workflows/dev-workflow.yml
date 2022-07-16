@@ -2,7 +2,7 @@ name: AMP.DEV DEV CI
 
 on:
   push:
-    branches: [ ci-pipeline ]
+    branches: [ pr-merge-check ]
 
 jobs:
 
@@ -12,11 +12,11 @@ jobs:
     steps:
       - name: Get Branch
         id: branch
-        run: echo "git_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_BRANCH
+        run: echo "git_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
       - name: Get Hash
         id: hash
-        run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_HASH
+        run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          tags: div1114/amp-dev:${{ env.branch }}-${{ env.hash }}
+          tags: div1114/amp-dev:${{ env.git_branch }}-${{ env.git_hash }}
           build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
           push: true 
