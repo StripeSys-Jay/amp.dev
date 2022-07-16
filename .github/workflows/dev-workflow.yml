@@ -10,7 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      
+      - name: Get Branch
+        id: branch
+        run: echo "git_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_BRANCH
+
+      - name: Get Hash
+        id: hash
+        run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_HASH
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -24,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          tags: div1114/amp-dev:${GITHUB_REF#refs/heads/}-${GITHUB_SHA}
+          tags: div1114/amp-dev:${{ env.branch }}-${{ env.hash }}
           build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
           push: true 
