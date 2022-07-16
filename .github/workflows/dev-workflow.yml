@@ -36,7 +36,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-
+       
+      - name: Get branch name
+        run: echo 'The branch name is' $BUILD_BRANCH
+        
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -50,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          tags: div1114/amp-dev:${{ env.BUILD_BRANCH }}
+          tags: div1114/amp-dev:$BUILD_BRANCH
           build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
           push: true 
