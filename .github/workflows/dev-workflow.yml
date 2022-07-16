@@ -17,13 +17,17 @@ jobs:
 
     steps:
       
-      - name: Extract branch name
+      - name: Extract branch name on Push Event
         if: github.event_name != 'pull_request'
         shell: bash
         run: echo "BUILD_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
         id: extract_branch
+
+      - name: Extract branch name on PR Merge Event
+        if: github.event_name == 'pull_request'
+        run: echo "BUILD_BRANCH=${GITHUB_HEAD_REF})"
       
-      - name: Print branch name
+      - name: Get branch name
         run: echo "${{ env.BUILD_BRANCH }}"
 
       - name: Set up Docker Buildx
