@@ -27,7 +27,7 @@ jobs:
         with:
           platforms: linux/amd64
           tags: div1114/amp-dev:latest
-          secrets: |
+          build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
           push: true 
 
