@@ -3,14 +3,36 @@ name: AMP.DEV DEV CI
 on:
   push:
     branches: [ ci-pipeline ]
-  pull_request:
-    branches: [ ci-pipeline ]
+  pull_request_target:
+    types:
+      - closed
+    branches:    
+      - 'ci-pipeline'
+
 
 jobs:
+
+  set_build_branch:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Extract branch name
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "::set-env name=BUILD_BRANCH::$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      
+      - name: Print branch name
+        if: github.event_name == 'pull_request'
+        run: echo "::set-env name=BUILD_BRANCH::$(echo ${GITHUB_HEAD_REF})"
+
+      
+      - name: Get branch name
+        run: echo 'The branch name is' $BUILD_BRANCH
   build:
 
     runs-on: ubuntu-latest
-
     steps:
 
       - name: Set up Docker Buildx
@@ -26,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          tags: div1114/amp-dev:latest
+          tags: div1114/amp-dev:${{ env.BUILD_BRANCH }}
           build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
           push: true 
