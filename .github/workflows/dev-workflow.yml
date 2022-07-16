@@ -25,7 +25,7 @@ jobs:
       - name: Build and push AMP.DEV Docker Image
         uses: docker/build-push-action@v3
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: div1114/amp-dev:latest
           secrets: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
