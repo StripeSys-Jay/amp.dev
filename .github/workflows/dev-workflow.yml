@@ -2,9 +2,9 @@ name: AMP.DEV DEV CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ ci-pipeline ]
   pull_request:
-    branches: [ develop ]
+    branches: [ ci-pipeline ]
 
 jobs:
   build:
