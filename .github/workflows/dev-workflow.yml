@@ -23,23 +23,14 @@ jobs:
         shell: bash
         run: echo "::set-env name=BUILD_BRANCH::$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-
       
       - name: Print branch name
         if: github.event_name == 'pull_request'
         run: echo "::set-env name=BUILD_BRANCH::$(echo ${GITHUB_HEAD_REF})"
-
       
       - name: Get branch name
         run: echo 'The branch name is' $BUILD_BRANCH
-  build:
 
-    runs-on: ubuntu-latest
-    steps:
-       
-      - name: Get branch name
-        run: echo 'The branch name is' $BUILD_BRANCH
-        
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
