@@ -2,22 +2,31 @@ name: AMP.DEV CI/CD WorkFlow
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ env-check ]
 
 jobs:
 
-  dev-workflow:
+  getBranch_and_commitHash:
     runs-on: ubuntu-latest
 
+    outputs:
+      output1: ${{ steps.branch.outputs.git_branch }}
+      output2: ${{ steps.hash.outputs.git_hash }}
     steps:
       - name: Get Branch
         id: branch
-        run: echo "git_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+#        run: echo "git_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        run: echo "::set-output name=git_branch::${GITHUB_REF#refs/heads/}"
 
       - name: Get Hash
         id: hash
-        run: echo "git_hash=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+#        run: echo "git_hash=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+        run: echo "::set-output name=git_hash::$(echo $GITHUB_SHA | cut -c1-7)"
 
+  Build_and_Push:
+    runs-on: ubuntu-latest
+    
+    steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -31,10 +40,10 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          tags: div1114/amp-dev:${{ env.git_branch }}-${{ env.git_hash }}
+          tags: div1114/amp-dev:${{needs.getBranch_and_commitHash.outputs.output1}}-${{needs.getBranch_and_commitHash.outputs.output2}}
           build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
-          push: true 
+          push: true
 
 
    
