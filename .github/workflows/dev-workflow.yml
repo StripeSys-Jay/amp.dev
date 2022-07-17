@@ -25,6 +25,7 @@ jobs:
 
   Build_and_Push:
     runs-on: ubuntu-latest
+    needs: getBranch_and_commitHash
     
     steps:
       - name: Set up Docker Buildx
