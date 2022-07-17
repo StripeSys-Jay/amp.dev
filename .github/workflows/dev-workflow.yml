@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  getBranch_and_commitHash:
+  get_Branch&commitHash:
     runs-on: ubuntu-latest
 
     outputs:
@@ -23,7 +23,7 @@ jobs:
 #        run: echo "git_hash=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
         run: echo "::set-output name=git_hash::$(echo $GITHUB_SHA | cut -c1-7)"
 
-  Build_and_Push:
+  Build&Push:
     runs-on: ubuntu-latest
     needs: getBranch_and_commitHash
     
@@ -45,6 +45,31 @@ jobs:
           build-args: |
             "AMP_DOC_TOKEN=${{ secrets.AMP_DOC_TOKEN }}"
           push: true
+
+  deployToDevEnv:
+    runs-on: ubuntu-latest
+    needs: getBranch_and_commitHash
+
+    steps: 
+      - name: DeployToEC2
+    
+      env:
+            PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
+            HOSTNAME : ${{ secrets.EC2_HOSTNAME  }}
+            USER_NAME : ${{ secrets.EC2_USERNAME  }}
+            
+    
+      run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${EC2_USERNAME}@${EC2_HOSTNAME} '
+
+          docker stop amp-dev
+          docker rm amp-dev
+          docker rmi -f $(docker images -q --filter=reference='ubuntu:*')
+          docker run -itd --name amp-dev -p 8080:8080 8083:8083 div1114/amp-dev:${{needs.getBranch_and_commitHash.outputs.output1}}-${{needs.getBranch_and_commitHash.outputs.output2}}
+
+
+    
 
 
    
