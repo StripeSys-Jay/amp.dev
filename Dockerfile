@@ -1,7 +1,7 @@
 FROM node:14.19.1-alpine
 
 ARG AMP_DOC_TOKEN
-# Install dependencies
+## Install dependencies
 RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3 python3-dev py3-pip yaml-dev git
 
 RUN pip3 install --global-option="--with-libyaml" --force pyyaml && \
