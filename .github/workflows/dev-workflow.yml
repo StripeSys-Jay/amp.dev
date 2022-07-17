@@ -53,13 +53,13 @@ jobs:
     steps: 
       - name: DeployToEC2
     
-      env:
+        env:
             PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
             HOSTNAME : ${{ secrets.EC2_HOSTNAME  }}
             USER_NAME : ${{ secrets.EC2_USERNAME  }}
             
     
-      run: |
+        run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${EC2_USERNAME}@${EC2_HOSTNAME} '
 
@@ -67,8 +67,8 @@ jobs:
           docker rm amp-dev
           docker rmi -f $(docker images -q --filter=reference='ubuntu:*')
           docker run -itd --name amp-dev -p 8080:8080 8083:8083 div1114/amp-dev:${{needs.getBranch_and_commitHash.outputs.output1}}-${{needs.getBranch_and_commitHash.outputs.output2}}
-
-
+          '
+          
     
 
 
