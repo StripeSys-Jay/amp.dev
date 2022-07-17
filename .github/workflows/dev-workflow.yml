@@ -48,7 +48,8 @@ jobs:
 
   deployToDevEnv:
     runs-on: ubuntu-latest
-    needs: [getBranch_and_commitHash, Build_and_Push]
+    needs: [
+      getBranch_and_commitHash, Build_and_Push]
 
     steps: 
       - name: DeployToEC2
