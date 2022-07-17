@@ -66,7 +66,6 @@ jobs:
           echo ${{ secrets.DOCKERHUB_TOKEN }}  | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker stop amp-dev
           docker rm amp-dev
-          docker rmi -f $(docker images -q --filter=reference='ubuntu:*')
-          docker run -itd --name amp-dev -p 8080:8080 -p 
-          8083:8083 div1114/amp-dev:${{needs.getBranch_and_commitHash.outputs.output1}}-${{needs.getBranch_and_commitHash.outputs.output2}}
+          docker rmi -f $(docker images -q --filter=reference='amp-dev:*')
+          docker run -itd --name amp-dev -p 8080:8080 -p 8083:8083 div1114/amp-dev:${{needs.getBranch_and_commitHash.outputs.output1}}-${{needs.getBranch_and_commitHash.outputs.output2}}
           "
