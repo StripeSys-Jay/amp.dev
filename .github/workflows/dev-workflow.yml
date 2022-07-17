@@ -2,7 +2,7 @@ name: AMP.DEV CI/CD WorkFlow
 
 on:
   push:
-    branches: [ env-check ]
+    branches: [ develop ]
 
 jobs:
 
