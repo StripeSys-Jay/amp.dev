@@ -53,10 +53,6 @@ jobs:
     steps: 
 
       - name: DeployToEC2
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
     
         env:
             PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
@@ -66,7 +62,8 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ec2-user@3.92.215.143 "
-
+          
+          echo ${{ secrets.DOCKERHUB_TOKEN }}  | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker stop amp-dev
           docker rm amp-dev
           docker rmi -f $(docker images -q --filter=reference='ubuntu:*')
